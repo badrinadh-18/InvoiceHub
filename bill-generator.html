@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bill Generator — Ragunadham Enterprises</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #3b5bdb;
+      --blue-dark: #2f4cb8;
+      --blue-light: #e8edff;
+      --green: #2f9e44;
+      --green-light: #ebfbee;
+      --red: #e03131;
+      --red-light: #fff5f5;
+      --orange: #e67700;
+      --orange-light: #fff9db;
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface2: #f7f8fa;
+      --border: #e5e7eb;
+      --border2: #d1d5db;
+      --text: #1a1d24;
+      --text2: #6b7280;
+      --text3: #9ca3af;
+      --radius: 10px;
+      --shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 2rem;
+    }
+
+    .nav-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .nav-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .nav-sub {
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .nav-tab {
+      padding: 0 16px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .nav-tab:hover {
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .nav-tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+      font-weight: 600;
+    }
+
+    .nav-tab .badge {
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 20px;
+      padding: 1px 7px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      padding: 1.5rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ── DASHBOARD ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-value.blue {
+      color: var(--blue);
+    }
+
+    .stat-value.green {
+      color: var(--green);
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* ── BILLS LIST ── */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .list-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 280px;
+      height: 36px;
+      padding: 0 12px 0 36px;
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      position: relative;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 280px;
+    }
+
+    .search-wrap::before {
+      content: '🔍';
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    .bills-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .bills-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .bills-table th {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .bills-table td {
+      padding: 12px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .bills-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .bills-table tbody tr:hover {
+      background: #fafbff;
+    }
+
+    .bill-no {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      color: var(--blue);
+    }
+
+    .buyer-cell {
+      font-weight: 600;
+    }
+
+    .village-cell {
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .amount-cell {
+      font-weight: 700;
+      color: var(--green);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 4px;
+    }
+
+    .action-btn {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--surface2);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .action-btn.danger:hover {
+      background: var(--red-light);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .action-btn.primary {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--blue-dark);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text2);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .empty-sub {
+      font-size: 13px;
+    }
+
+    /* ── FORM ── */
+    .sec {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .sec-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .sec-title::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    .frow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .fg label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.1);
+    }
+
+    input[readonly] {
+      background: var(--surface2);
+      color: var(--text2);
+      border-style: dashed;
+      cursor: default;
+    }
+
+    input::placeholder {
+      color: var(--text3);
+    }
+
+    /* Items table */
+    .itable {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .itable th {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 6px;
+      border-bottom: 1.5px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .itable td {
+      padding: 5px 3px;
+      vertical-align: middle;
+    }
+
+    .itable td input {
+      height: 34px;
+      font-size: 13px;
+    }
+
+    .itable tbody tr {
+      border-bottom: 1px solid #f0f2f5;
+    }
+
+    .itable tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    .row-total {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    .btn {
+      height: 38px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--surface2);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btnp {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .btnp:hover {
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+      color: #fff;
+    }
+
+    .btns {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    .btns:hover {
+      background: #248a3d;
+      border-color: #248a3d;
+      color: #fff;
+    }
+
+    .btnd-row {
+      color: var(--red);
+      border: none;
+      background: transparent;
+      padding: 0 8px;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .btnd-row:hover {
+      background: var(--red-light);
+    }
+
+    .grand-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 8px 6px;
+      border-top: 2px solid var(--border);
+      margin-top: 10px;
+    }
+
+    .grand-lbl {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text2);
+    }
+
+    .grand-amt {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .acts {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── BILL PREVIEW ── */
+    .bill-wrap {
+      display: none;
+    }
+
+    .bill-wrap.show {
+      display: block;
+    }
+
+    .seller-header {
+      text-align: center;
+      padding: 1.2rem 1rem 1rem;
+      border-bottom: 2.5px solid var(--blue);
+      margin-bottom: 1.2rem;
+    }
+
+    .seller-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .bill-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      padding: 8px 12px;
+      background: var(--surface2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .bill-meta-left {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .bill-meta-left span {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .buyer-box {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 1.2rem;
+      border: 1.5px solid var(--border);
+    }
+
+    .buyer-lbl {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .buyer-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .bill-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .bill-table th {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600;
+      padding: 8px;
+      border-top: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .bill-table th.r,
+    .bill-table td.r {
+      text-align: right;
+    }
+
+    .bill-table td {
+      font-size: 13px;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .total-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .total-box {
+      min-width: 220px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .total-row.final {
+      border-top: 2px solid var(--blue);
+      margin-top: 4px;
+      padding-top: 10px;
+    }
+
+    .total-row.final .tl {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .total-row.final .tv {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .bill-footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .bill-footer-note {
+      font-size: 12px;
+      color: var(--text2);
+      font-style: italic;
+    }
+
+    .sign-line {
+      height: 1px;
+      border-bottom: 1.5px solid var(--border2);
+      min-width: 150px;
+      margin-bottom: 4px;
+    }
+
+    .sign-lbl {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+      }
+    }
+
+    .modal-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .modal-close:hover {
+      background: var(--red-light);
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* ── TOP ROW ── */
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .top-row .sec {
+      margin-bottom: 0;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .seller-card {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1.5px solid var(--border);
+      flex-grow: 1;
+    }
+
+    .seller-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* ── SAVED BADGE ── */
+    .saved-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--green-light);
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── TOAST ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: #1a1d24;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg);
+      animation: toastIn 0.25s ease;
+      min-width: 200px;
+    }
+
+    .toast.success {
+      background: var(--green);
+    }
+
+    .toast.error {
+      background: var(--red);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      @page {
+        size: A5 portrait;
+        margin: 5mm;
+      }
+
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .nav,
+      #dashPage,
+      #formAreaWrap,
+      #billActions,
+      .acts {
+        display: none !important;
+      }
+
+      #billWrap {
+        display: block !important;
+      }
+
+      .sec {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+
+      .bill-wrap {
+        display: block !important;
+      }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 600px) {
+      .page {
+        padding: 0.75rem;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stats-row .stat-card:last-child {
+        grid-column: span 2;
+      }
+
+      .top-row {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-tab span.tab-label {
+        display: none;
+      }
+
+      .bills-table thead {
+        display: none;
+      }
+
+      .bills-table,
+      .bills-table tbody,
+      .bills-table tr,
+      .bills-table td {
+        display: block;
+      }
+
+      .bills-table tr {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 10px 12px;
+        background: var(--surface);
+      }
+
+      .bills-table td {
+        border: none;
+        padding: 3px 0;
+      }
+
+      .actions-cell {
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo">RE</div>
+      <div>
+        <div class="nav-title">Ragunadham Enterprises</div>
+        <div class="nav-sub">Invoice Manager</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showPage('dash')" id="tab-dash">
+        📊 <span class="tab-label">Dashboard</span>
+      </div>
+      <div class="nav-tab" onclick="showPage('bills')" id="tab-bills">
+        🗂 <span class="tab-label">All Bills</span>
+        <span class="badge" id="billCountBadge">0</span>
+      </div>
+      <div class="nav-tab" onclick="showPage('form')" id="tab-form">
+        ✏️ <span class="tab-label">New Bill</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ══════════════ DASHBOARD ══════════════ -->
+  <div class="page active" id="dashPage">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Bills</div>
+        <div class="stat-value blue" id="statTotal">0</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value green" id="statRevenue">₹0</div>
+        <div class="stat-sub">Across all bills</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">This Month</div>
+        <div class="stat-value" id="statMonth">0</div>
+        <div class="stat-sub" id="statMonthSub">Bills this month</div>
+      </div>
+    </div>
+
+    <div class="bills-table-wrap">
+      <div
+        style="padding:16px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:15px;font-weight:700;">Recent Bills</div>
+        <button class="btn btnp" onclick="showPage('form');resetForm()">+ New Bill</button>
+      </div>
+      <table class="bills-table">
+        <thead>
+          <tr>
+            <th>Bill #</th>
+            <th>Buyer</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="recentBillsBody"></tbody>
+      </table>
+      <div id="recentEmpty" class="empty-state" style="display:none">
+        <div class="empty-icon">📄</div>
+        <div class="empty-title">No bills yet</div>
+        <div class="empty-sub">Create your first bill to get started</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ ALL BILLS ══════════════ -->
+  <div class="page" id="billsPage">
+    <div class="list-header">
+      <div class="list-title">All Bills</div>
+      <div class="search-wrap">
+        <input class="search-box" id="searchBox" placeholder="Search buyer, bill #..." oninput="renderBillsList()" />
+      </div>
+      <button class="btn btnp" onclick="showPage('form');resetForm()">+ New Bill</button>
+    </div>
+    <div class="bills-table-wrap">
+      <table class="bills-table">
+        <thead>
+          <tr>
+            <th>Bill #</th>
+            <th>Buyer</th>
+            <th>Village</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="allBillsBody"></tbody>
+      </table>
+      <div id="allBillsEmpty" class="empty-state" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No bills found</div>
+        <div class="empty-sub">Try a different search or create a new bill</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ FORM ══════════════ -->
+  <div class="page" id="formPage">
+    <div id="formAreaWrap">
+      <div class="top-row">
+        <div class="sec">
+          <div class="sec-title">Seller</div>
+          <div class="seller-card">
+            <div class="seller-avatar">RE</div>
+            <div>
+              <div style="font-size:15px;font-weight:600;">Ragunadham Enterprises</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px">Prop: Tangudu Ramesh</div>
+              <div style="font-size:13px;color:var(--text2)">Ph: 9441378885 / 9346074099</div>
+              <div style="font-size:12px;color:var(--text2)">rameshthagudu466@gmail.com</div>
+            </div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-title">Bill Details</div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex-grow:1;justify-content:center;">
+            <div class="fg"><label>Bill Number (auto)</label><input type="text" id="billNo" readonly /></div>
+            <div class="fg"><label>Bill Date</label><input type="date" id="billDate" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Buyer Details</div>
+        <div class="frow">
+          <div class="fg"><label>Buyer Name</label><input type="text" id="buyerName" placeholder="Enter buyer name" />
+          </div>
+          <div class="fg"><label>Village / Area</label><input type="text" id="buyerVillage"
+              placeholder="Enter village name" /></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Items</div>
+        <table class="itable">
+          <colgroup>
+            <col style="width:28%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:20%">
+            <col style="width:18%">
+            <col style="width:10%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Item name</th>
+              <th>Qty</th>
+              <th>Type</th>
+              <th>Price/unit (₹)</th>
+              <th style="text-align:right">Total (₹)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody"></tbody>
+        </table>
+        <div style="margin-top:12px">
+          <button class="btn" onclick="addRow()">+ Add item</button>
+        </div>
+        <div class="grand-row">
+          <span class="grand-lbl">Grand total</span>
+          <span class="grand-amt" id="grandTotalDisplay">₹0.00</span>
+          <input type="hidden" id="grandTotal" value="0.00" />
+        </div>
+      </div>
+
+      <div class="acts">
+        <button class="btn" onclick="clearAll()">Clear</button>
+        <button class="btn btnp" onclick="generateBill()">Preview Bill ↗</button>
+      </div>
+    </div>
+
+    <!-- Bill Preview -->
+    <div id="billWrap" class="bill-wrap">
+      <div id="billContent" class="sec">
+        <div class="seller-header">
+          <div class="seller-name">Ragunadham Enterprises</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:2px">Prop: Tangudu Ramesh</div>
+          <div style="font-size:13px;color:var(--text2)">Mobile: 9441378885 / 9346074099</div>
+          <div style="font-size:12px;color:var(--text2)">rameshthagudu466@gmail.com</div>
+        </div>
+        <div class="bill-meta">
+          <div class="bill-meta-left">Bill no: <span id="pBillNo"></span></div>
+          <div class="bill-meta-left">Date: <span id="pDate"></span></div>
+        </div>
+        <div class="buyer-box">
+          <div class="buyer-lbl">Bill to</div>
+          <div class="buyer-name" id="pBuyerName"></div>
+          <div style="font-size:13px;color:var(--text2)" id="pVillage"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="bill-table">
+            <thead>
+              <tr>
+                <th style="width:6%">#</th>
+                <th style="width:32%">Item</th>
+                <th class="r" style="width:12%">Qty</th>
+                <th style="width:10%">Type</th>
+                <th class="r" style="width:18%">Rate (₹)</th>
+                <th class="r" style="width:22%">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="pItems"></tbody>
+          </table>
+        </div>
+        <div class="total-section">
+          <div class="total-box">
+            <div class="total-row final">
+              <span class="tl">Total amount</span>
+              <span class="tv" id="pTotal"></span>
+            </div>
+          </div>
+        </div>
+        <div class="bill-footer">
+          <div class="bill-footer-note">Thank you for your business!</div>
+          <div style="text-align:right;margin-top:10px">
+            <div class="sign-line"></div>
+            <div class="sign-lbl">Authorised Signature</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acts" id="billActions">
+        <button class="btn" onclick="backToForm()">← Edit</button>
+        <button class="btn" onclick="window.print()">🖨 Print</button>
+        <button class="btn" id="downloadBtn" onclick="downloadBill()">⬇ Download PDF</button>
+        <button class="btn btns" id="saveBillBtn" onclick="saveBill()">💾 Save Bill</button>
+      </div>
+
+      <div id="savedIndicator" style="display:none;text-align:center;margin-top:0.5rem">
+        <span class="saved-badge">✓ Bill Saved</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ VIEW MODAL ══════════════ -->
+  <div class="modal-overlay" id="viewModal">
+    <div class="modal" style="max-width:620px">
+      <div class="modal-head">
+        <div class="modal-title" id="viewModalTitle">Bill Details</div>
+        <button class="modal-close" onclick="closeModal('viewModal')">×</button>
+      </div>
+      <div class="modal-body" id="viewModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal('viewModal')">Close</button>
+        <button class="btn" onclick="printSavedBill(currentViewId)">🖨 Print</button>
+        <button class="btn" id="modalDownloadBtn" onclick="downloadSavedBill(currentViewId)">⬇ PDF</button>
+        <button class="btn btnp" onclick="editBill(currentViewId)">✏️ Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ DELETE MODAL ══════════════ -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width:380px">
+      <div class="modal-head">
+        <div class="modal-title">Delete Bill?</div>
+        <button class="modal-close" onclick="closeModal('deleteModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--text2);line-height:1.6">
+          Are you sure you want to delete bill <strong id="deleteBillNoText"></strong>? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn" style="background:var(--red);color:#fff;border-color:var(--red)"
+          onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // ══ STATE ══
+    let rowCount = 0;
+    let editingBillId = null;
+    let currentViewId = null;
+    let deleteTargetId = null;
+    let currentBillData = null; // the generated bill object before saving
+
+    // ══ STORAGE HELPERS ══
+    function getBills() { try { return JSON.parse(localStorage.getItem('re_bills') || '[]'); } catch { return []; } }
+    function saveBills(arr) { localStorage.setItem('re_bills', JSON.stringify(arr)); }
+    function getSeq() { return parseInt(localStorage.getItem('re_seq') || '0'); }
+    function nextSeq() { const n = getSeq() + 1; localStorage.setItem('re_seq', n); return n; }
+    function peekSeq() { return getSeq() + 1; }
+    function fmtBillNo(n) { return String(n).padStart(4, '0'); }
+
+    // ══ TOAST ══
+    function toast(msg, type = '') {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'toast' + (type ? ' ' + type : '');
+      t.innerHTML = (type === 'success' ? '✓ ' : type === 'error' ? '✗ ' : 'ℹ ') + msg;
+      c.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2500);
+    }
+
+    // ══ NAVIGATION ══
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id + 'Page').classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+      if (id === 'dash') refreshDash();
+      if (id === 'bills') renderBillsList();
+    }
+
+    // ══ DASHBOARD ══
+    function refreshDash() {
+      const bills = getBills();
+      document.getElementById('statTotal').textContent = bills.length;
+      const rev = bills.reduce((s, b) => s + (parseFloat(b.total) || 0), 0);
+      document.getElementById('statRevenue').textContent = '₹' + rev.toFixed(2);
+      document.getElementById('billCountBadge').textContent = bills.length;
+
+      const now = new Date();
+      const monthBills = bills.filter(b => {
+        const d = new Date(b.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+      document.getElementById('statMonth').textContent = monthBills.length;
+      document.getElementById('statMonthSub').textContent = 'Bills in ' + now.toLocaleString('default', { month: 'long' });
+
+      const tbody = document.getElementById('recentBillsBody');
+      const recent = [...bills].reverse().slice(0, 5);
+      if (recent.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('recentEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('recentEmpty').style.display = 'none';
+      tbody.innerHTML = recent.map(b => billRow(b, true)).join('');
+    }
+
+    // ══ BILLS LIST ══
+    function renderBillsList() {
+      const q = (document.getElementById('searchBox')?.value || '').toLowerCase();
+      const bills = getBills().filter(b =>
+        !q || b.buyerName.toLowerCase().includes(q) ||
+        b.billNo.includes(q) || (b.village || '').toLowerCase().includes(q)
+      ).reverse();
+
+      document.getElementById('billCountBadge').textContent = getBills().length;
+      const tbody = document.getElementById('allBillsBody');
+      if (bills.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('allBillsEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('allBillsEmpty').style.display = 'none';
+      tbody.innerHTML = bills.map(b => billRow(b, false)).join('');
+    }
+
+    function billRow(b, compact) {
+      return `<tr>
+    <td><span class="bill-no">#${b.billNo}</span></td>
+    <td><div class="buyer-cell">${escHtml(b.buyerName)}</div></td>
+    ${!compact ? `<td><div class="village-cell">${escHtml(b.village || '—')}</div></td>` : ''}
+    <td style="font-size:12px;color:var(--text2)">${b.date}</td>
+    <td><span class="amount-cell">₹${parseFloat(b.total).toFixed(2)}</span></td>
+    <td>
+      <div class="actions-cell">
+        <button class="action-btn" onclick="viewBill('${b.id}')">👁 View</button>
+        <button class="action-btn" onclick="editBill('${b.id}')">✏️</button>
+        <button class="action-btn" onclick="downloadSavedBill('${b.id}')">⬇</button>
+        <button class="action-btn danger" onclick="openDeleteModal('${b.id}')">🗑</button>
+      </div>
+    </td>
+  </tr>`;
+    }
+
+    // ══ FORM ══
+    function resetForm() {
+      editingBillId = null;
+      currentBillData = null;
+      document.getElementById('billNo').value = fmtBillNo(peekSeq());
+      document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('buyerName').value = '';
+      document.getElementById('buyerVillage').value = '';
+      document.getElementById('itemsBody').innerHTML = '';
+      rowCount = 0;
+      updateGrand();
+      addRow();
+      document.getElementById('formAreaWrap').style.display = 'block';
+      document.getElementById('billWrap').className = 'bill-wrap';
+      document.getElementById('saveBillBtn').disabled = false;
+      document.getElementById('saveBillBtn').innerHTML = '💾 Save Bill';
+      document.getElementById('savedIndicator').style.display = 'none';
+    }
+
+    function addRow() {
+      rowCount++;
+      const tbody = document.getElementById('itemsBody');
+      const tr = document.createElement('tr');
+      tr.id = 'row-' + rowCount;
+      tr.innerHTML = `
+    <td data-label="Item"><input type="text" placeholder="Item name" /></td>
+    <td data-label="Qty"><input type="number" placeholder="0" min="0" step="1" oninput="calcRow(${rowCount})" /></td>
+    <td data-label="Type">
+      <select style="height:34px;font-size:12px;padding:0 4px">
+        <option value="kgs">kgs</option>
+        <option value="pcs">pcs</option>
+        <option value="bag">bag</option>
+        <option value="box">box</option>
+        <option value="Grams">Grams</option>
+        <option value="Ltrs">Ltrs</option>
+      </select>
+    </td>
+    <td data-label="Price"><input type="number" placeholder="0.00" min="0" step="0.01" oninput="calcRow(${rowCount})" /></td>
+    <td data-label="Total"><input type="number" id="rt${rowCount}" value="0.00" min="0" step="0.01"
+        oninput="updateGrand()" style="height:34px;font-size:13px;font-weight:600;text-align:right;width:100%" /></td>
+    <td><button class="btnd-row" onclick="removeRow(${rowCount})">×</button></td>
+  `;
+      tbody.appendChild(tr);
+      tr.querySelector('input').focus();
+    }
+
+    function calcRow(id) {
+      const row = document.getElementById('row-' + id);
+      if (!row) return;
+      const inputs = row.querySelectorAll('input');
+      const qty = parseFloat(inputs[1].value) || 0;
+      const price = parseFloat(inputs[2].value) || 0;
+      document.getElementById('rt' + id).value = (qty * price).toFixed(2);
+      updateGrand();
+    }
+
+    function removeRow(id) {
+      const row = document.getElementById('row-' + id);
+      if (row) row.remove();
+      updateGrand();
+    }
+
+    function updateGrand() {
+      let g = 0;
+      document.querySelectorAll('[id^="rt"]').forEach(el => { g += parseFloat(el.value) || 0; });
+      document.getElementById('grandTotal').value = g.toFixed(2);
+      document.getElementById('grandTotalDisplay').textContent = '₹' + g.toFixed(2);
+    }
+
+    // ══ GENERATE PREVIEW ══
+    function generateBill() {
+      const name = document.getElementById('buyerName').value.trim();
+      const village = document.getElementById('buyerVillage').value.trim();
+      if (!name) { toast('Please enter buyer name.', 'error'); return; }
+      const rows = document.querySelectorAll('#itemsBody tr');
+      if (!rows.length) { toast('Please add at least one item.', 'error'); return; }
+
+      // If not editing, peek seq (don't consume yet — consume on save)
+      const billNo = editingBillId
+        ? document.getElementById('billNo').value
+        : fmtBillNo(peekSeq());
+      const date = document.getElementById('billDate').value || new Date().toISOString().split('T')[0];
+
+      document.getElementById('pBillNo').textContent = billNo;
+      document.getElementById('pDate').textContent = date;
+      document.getElementById('pBuyerName').textContent = name;
+      document.getElementById('pVillage').textContent = village;
+
+      let itemsArr = [], html = '', grand = 0;
+      rows.forEach((row, i) => {
+        const inputs = row.querySelectorAll('input');
+        const selects = row.querySelectorAll('select');
+        const item = inputs[0].value || '-';
+        const qty = parseFloat(inputs[1].value) || 0;
+        const type = selects[0] ? selects[0].value : '';
+        const rate = parseFloat(inputs[2].value) || 0;
+        const rtEl = row.querySelector('input[id^="rt"]');
+        const amt = parseFloat(rtEl ? rtEl.value : qty * rate) || 0;
+        grand += amt;
+        itemsArr.push({ item, qty, type, rate, amt });
+        html += `<tr>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border);color:var(--text2)">${i + 1}</td>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border)">${escHtml(item)}</td>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border);text-align:right">${qty}</td>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border)">${type}</td>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border);text-align:right">${rate.toFixed(2)}</td>
+      <td style="font-size:13px;padding:10px 8px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">₹${amt.toFixed(2)}</td>
+    </tr>`;
+      });
+
+      document.getElementById('pItems').innerHTML = html;
+      document.getElementById('pTotal').textContent = '₹' + grand.toFixed(2);
+
+      // Store in memory for save
+      currentBillData = {
+        id: editingBillId || ('b_' + Date.now()),
+        billNo,
+        date,
+        buyerName: name,
+        village,
+        items: itemsArr,
+        total: grand.toFixed(2)
+      };
+
+      // Reset save button state
+      document.getElementById('saveBillBtn').disabled = false;
+      document.getElementById('saveBillBtn').innerHTML = '💾 Save Bill';
+      document.getElementById('savedIndicator').style.display = 'none';
+
+      document.getElementById('formAreaWrap').style.display = 'none';
+      document.getElementById('billWrap').className = 'bill-wrap show';
+    }
+
+    // ══ SAVE BILL ══
+    function saveBill() {
+      if (!currentBillData) { toast('No bill to save.', 'error'); return; }
+
+      const bills = getBills();
+      const existIdx = bills.findIndex(b => b.id === currentBillData.id);
+
+      if (editingBillId) {
+        // Update existing
+        bills[existIdx] = currentBillData;
+        toast('Bill updated successfully!', 'success');
+      } else {
+        // New bill — consume the sequence number now
+        const seq = nextSeq();
+        currentBillData.billNo = fmtBillNo(seq);
+        document.getElementById('pBillNo').textContent = currentBillData.billNo;
+        bills.push(currentBillData);
+        editingBillId = currentBillData.id;
+        toast('Bill saved successfully!', 'success');
+      }
+
+      saveBills(bills);
+      document.getElementById('billCountBadge').textContent = bills.length;
+
+      document.getElementById('saveBillBtn').disabled = true;
+      document.getElementById('saveBillBtn').innerHTML = '✓ Saved';
+      document.getElementById('savedIndicator').style.display = 'block';
+    }
+
+    function backToForm() {
+      document.getElementById('formAreaWrap').style.display = 'block';
+      document.getElementById('billWrap').className = 'bill-wrap';
+    }
+
+    function clearAll() {
+      if (!confirm('Clear all data?')) return;
+      resetForm();
+    }
+
+    // ══ EDIT BILL ══
+    function editBill(id) {
+      closeModal('viewModal');
+      const bills = getBills();
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+
+      showPage('form');
+      editingBillId = id;
+      currentBillData = null;
+
+      document.getElementById('formAreaWrap').style.display = 'block';
+      document.getElementById('billWrap').className = 'bill-wrap';
+      document.getElementById('billNo').value = bill.billNo;
+      document.getElementById('billDate').value = bill.date;
+      document.getElementById('buyerName').value = bill.buyerName;
+      document.getElementById('buyerVillage').value = bill.village || '';
+      document.getElementById('itemsBody').innerHTML = '';
+      rowCount = 0;
+
+      (bill.items || []).forEach(it => {
+        rowCount++;
+        const tbody = document.getElementById('itemsBody');
+        const tr = document.createElement('tr');
+        tr.id = 'row-' + rowCount;
+        tr.innerHTML = `
+      <td><input type="text" value="${escAttr(it.item)}" /></td>
+      <td><input type="number" value="${it.qty}" min="0" step="1" oninput="calcRow(${rowCount})" /></td>
+      <td><select style="height:34px;font-size:12px;padding:0 4px">
+        ${['kgs', 'pcs', 'bag', 'box', 'Grams', 'Ltrs'].map(v => `<option value="${v}"${v === it.type ? ' selected' : ''}>${v}</option>`).join('')}
+      </select></td>
+      <td><input type="number" value="${it.rate}" min="0" step="0.01" oninput="calcRow(${rowCount})" /></td>
+      <td><input type="number" id="rt${rowCount}" value="${it.amt.toFixed(2)}" min="0" step="0.01"
+          oninput="updateGrand()" style="height:34px;font-size:13px;font-weight:600;text-align:right;width:100%" /></td>
+      <td><button class="btnd-row" onclick="removeRow(${rowCount})">×</button></td>
+    `;
+        tbody.appendChild(tr);
+      });
+      updateGrand();
+    }
+
+    // ══ VIEW BILL ══
+    function viewBill(id) {
+      const bills = getBills();
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+      currentViewId = id;
+
+      document.getElementById('viewModalTitle').textContent = `Bill #${bill.billNo} — ${bill.buyerName}`;
+
+      let rows = (bill.items || []).map((it, i) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)">${i + 1}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:13px">${escHtml(it.item)}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;text-align:right">${it.qty}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:13px">${it.type}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;text-align:right">₹${parseFloat(it.rate).toFixed(2)}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;text-align:right;font-weight:700">₹${parseFloat(it.amt).toFixed(2)}</td>
+    </tr>`).join('');
+
+      document.getElementById('viewModalBody').innerHTML = `
+    <div style="background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:12px;border:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div><div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Buyer</div>
+        <div style="font-size:15px;font-weight:700">${escHtml(bill.buyerName)}</div>
+        <div style="font-size:12px;color:var(--text2)">${escHtml(bill.village || '—')}</div></div>
+      <div style="text-align:right"><div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Bill</div>
+        <div style="font-size:15px;font-weight:700;font-family:'DM Mono',monospace">#${bill.billNo}</div>
+        <div style="font-size:12px;color:var(--text2)">${bill.date}</div></div>
+    </div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:400px">
+      <thead><tr style="background:var(--surface2)">
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border);text-align:left">#</th>
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border);text-align:left">Item</th>
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border);text-align:right">Qty</th>
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border)">Type</th>
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border);text-align:right">Rate</th>
+        <th style="padding:8px;font-size:10px;color:var(--text2);border-bottom:1px solid var(--border);text-align:right">Amount</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <div style="min-width:200px;border-top:2px solid var(--blue);padding-top:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:14px;font-weight:600">Total</span>
+        <span style="font-size:18px;font-weight:700;color:var(--blue)">₹${parseFloat(bill.total).toFixed(2)}</span>
+      </div>
+    </div>`;
+
+      openModal('viewModal');
+    }
+
+    // ══ DELETE ══
+    function openDeleteModal(id) {
+      const bills = getBills();
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+      deleteTargetId = id;
+      document.getElementById('deleteBillNoText').textContent = '#' + bill.billNo;
+      openModal('deleteModal');
+    }
+    function confirmDelete() {
+      const bills = getBills().filter(b => b.id !== deleteTargetId);
+      saveBills(bills);
+      closeModal('deleteModal');
+      toast('Bill deleted.', '');
+      renderBillsList();
+      refreshDash();
+    }
+
+    // ══ PRINT SAVED BILL ══
+    function printSavedBill(id) {
+      const bills = getBills();
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+
+      // Build the bill preview and trigger print
+      renderBillIntoPreview(bill);
+      closeModal('viewModal');
+
+      // Small timeout so DOM updates
+      setTimeout(() => window.print(), 300);
+    }
+
+    // ══ DOWNLOAD SAVED BILL ══
+    async function downloadSavedBill(id) {
+      const bills = getBills();
+      const bill = bills.find(b => b.id === id);
+      if (!bill) return;
+
+      closeModal('viewModal');
+      await generatePdfForBill(bill);
+    }
+
+    // Render a saved bill into the form preview (for print/download from list)
+    function renderBillIntoPreview(bill) {
+      showPage('form');
+      // Load into form then generate
+      editingBillId = bill.id;
+      document.getElementById('buyerName').value = bill.buyerName;
+      document.getElementById('buyerVillage').value = bill.village || '';
+      document.getElementById('billDate').value = bill.date;
+      document.getElementById('billNo').value = bill.billNo;
+      document.getElementById('itemsBody').innerHTML = '';
+      rowCount = 0;
+      (bill.items || []).forEach(it => {
+        rowCount++;
+        const tbody = document.getElementById('itemsBody');
+        const tr = document.createElement('tr');
+        tr.id = 'row-' + rowCount;
+        tr.innerHTML = `
+      <td><input type="text" value="${escAttr(it.item)}" /></td>
+      <td><input type="number" value="${it.qty}" oninput="calcRow(${rowCount})" /></td>
+      <td><select style="height:34px;font-size:12px;padding:0 4px">
+        ${['kgs', 'pcs', 'bag', 'box', 'Grams', 'Ltrs'].map(v => `<option value="${v}"${v === it.type ? ' selected' : ''}>${v}</option>`).join('')}
+      </select></td>
+      <td><input type="number" value="${it.rate}" oninput="calcRow(${rowCount})" /></td>
+      <td><input type="number" id="rt${rowCount}" value="${it.amt.toFixed(2)}" style="height:34px;font-size:13px;text-align:right;width:100%" oninput="updateGrand()" /></td>
+      <td><button class="btnd-row" onclick="removeRow(${rowCount})">×</button></td>
+    `;
+        tbody.appendChild(tr);
+      });
+      generateBill();
+    }
+
+    // ══ DOWNLOAD PDF (current preview) ══
+    async function downloadBill() {
+      if (!currentBillData) { toast('Generate bill first.', 'error'); return; }
+      // Auto-save before download
+      saveBill();
+      await generatePdfForBill(currentBillData);
+    }
+
+    async function generatePdfForBill(bill) {
+      const fname = (bill.buyerName + '_' + bill.billNo).replace(/[\/\\?%*:|"<>]/g, '-').replace(/\s+/g, '_') + '.pdf';
+      const btn = document.getElementById('downloadBtn') || document.getElementById('modalDownloadBtn');
+      if (btn) { btn.innerHTML = '⏳ Generating...'; btn.disabled = true; }
+
+      try {
+        const { jsPDF } = window.jspdf;
+        // A5: 148 x 210 mm
+        const pdf = new jsPDF({ unit: 'mm', format: 'a5', orientation: 'portrait' });
+        const W = 148, ml = 10, mr = 10, cw = W - ml - mr; // content width = 128mm
+        const BLUE = [59, 91, 219], GRAY = [107, 114, 128], DARK = [26, 29, 36], LIGHTBG = [247, 248, 250];
+        let y = 10;
+
+        const txt = (s, x, yy, opts) => pdf.text(String(s ?? ''), x, yy, opts);
+        const line = (x1, y1, x2, y2, color, w) => {
+          pdf.setDrawColor(...(color || GRAY));
+          pdf.setLineWidth(w || 0.3);
+          pdf.line(x1, y1, x2, y2);
+        };
+        const setFont = (style, size, color) => {
+          pdf.setFont('helvetica', style || 'normal');
+          pdf.setFontSize(size || 10);
+          pdf.setTextColor(...(color || DARK));
+        };
+
+        // ── HEADER ──
+        setFont('bold', 16, BLUE);
+        txt('Ragunadham Enterprises', W / 2, y, { align: 'center' }); y += 5;
+        setFont('normal', 8, GRAY);
+        txt('Prop: Tangudu Ramesh', W / 2, y, { align: 'center' }); y += 4;
+        txt('Mobile: 9441378885 / 9346074099', W / 2, y, { align: 'center' }); y += 4;
+        txt('rameshthagudu466@gmail.com', W / 2, y, { align: 'center' }); y += 5;
+
+        // blue line under header
+        pdf.setDrawColor(...BLUE); pdf.setLineWidth(0.6);
+        pdf.line(ml, y, W - mr, y); y += 5;
+
+        // ── META ROW ──
+        pdf.setFillColor(...LIGHTBG);
+        pdf.roundedRect(ml, y, cw, 8, 1.5, 1.5, 'F');
+        setFont('normal', 8, GRAY);
+        txt('Bill No:', ml + 3, y + 5.2);
+        setFont('bold', 8, DARK);
+        txt(bill.billNo, ml + 18, y + 5.2);
+        setFont('normal', 8, GRAY);
+        txt('Date:', W - mr - 35, y + 5.2);
+        setFont('bold', 8, DARK);
+        txt(bill.date, W - mr - 3, y + 5.2, { align: 'right' });
+        y += 12;
+
+        // ── BUYER BOX ──
+        pdf.setFillColor(...LIGHTBG);
+        pdf.roundedRect(ml, y, cw, 16, 1.5, 1.5, 'F');
+        pdf.setDrawColor(229, 231, 235); pdf.setLineWidth(0.3);
+        pdf.roundedRect(ml, y, cw, 16, 1.5, 1.5, 'S');
+        setFont('bold', 7, GRAY);
+        txt('BILL TO', ml + 3, y + 4.5);
+        setFont('bold', 11, DARK);
+        txt(bill.buyerName, ml + 3, y + 10);
+        setFont('normal', 8, GRAY);
+        txt(bill.village || '', ml + 3, y + 14.5);
+        y += 20;
+
+        // ── TABLE HEADER ──
+        const cols = [
+          { label: '#', w: 8, align: 'left' },
+          { label: 'Item', w: 42, align: 'left' },
+          { label: 'Qty', w: 14, align: 'right' },
+          { label: 'Type', w: 16, align: 'left' },
+          { label: 'Rate (Rs.)', w: 24, align: 'right' },
+          { label: 'Amount (Rs.)', w: 24, align: 'right' },
+        ];
+
+        // header row bg
+        pdf.setFillColor(...LIGHTBG);
+        pdf.rect(ml, y, cw, 7, 'F');
+        // top + bottom border
+        pdf.setDrawColor(229, 231, 235); pdf.setLineWidth(0.3);
+        pdf.line(ml, y, W - mr, y);
+        pdf.line(ml, y + 7, W - mr, y + 7);
+
+        setFont('bold', 7.5, GRAY);
+        let cx = ml;
+        cols.forEach(col => {
+          const tx = col.align === 'right' ? cx + col.w - 1 : cx + 1.5;
+          txt(col.label.toUpperCase(), tx, y + 4.8, { align: col.align });
+          cx += col.w;
+        });
+        y += 7;
+
+        // ── TABLE ROWS ──
+        const rowH = 7.5;
+        (bill.items || []).forEach((it, i) => {
+          // alternating row bg
+          if (i % 2 === 0) {
+            pdf.setFillColor(252, 252, 253);
+            pdf.rect(ml, y, cw, rowH, 'F');
+          }
+          setFont('normal', 8.5, i % 2 === 0 ? [100, 110, 130] : DARK);
+          cx = ml;
+          const vals = [
+            { v: i + 1, align: 'left' },
+            { v: it.item, align: 'left' },
+            { v: it.qty, align: 'right' },
+            { v: it.type, align: 'left' },
+            { v: parseFloat(it.rate).toFixed(2), align: 'right' },
+            { v: parseFloat(it.amt).toFixed(2), align: 'right' },
+          ];
+          vals.forEach((cell, ci) => {
+            setFont(ci === 5 ? 'bold' : 'normal', 8.5, ci === 0 ? GRAY : DARK);
+            const tx = cell.align === 'right' ? cx + cols[ci].w - 1 : cx + 1.5;
+            // truncate long item names
+            let v = String(cell.v ?? '');
+            if (ci === 1 && v.length > 22) v = v.substring(0, 20) + '..';
+            txt(v, tx, y + 5, { align: cell.align });
+            cx += cols[ci].w;
+          });
+          // row bottom divider
+          pdf.setDrawColor(235, 237, 240); pdf.setLineWidth(0.2);
+          pdf.line(ml, y + rowH, W - mr, y + rowH);
+          y += rowH;
+        });
+
+        // ── TOTAL ──
+        y += 4;
+        const totalBoxX = W - mr - 55;
+        pdf.setDrawColor(...BLUE); pdf.setLineWidth(0.5);
+        pdf.line(totalBoxX, y, W - mr, y);
+        y += 5;
+        setFont('bold', 10, DARK);
+        txt('Total Amount:', totalBoxX, y);
+        setFont('bold', 13, BLUE);
+        txt('Rs.' + parseFloat(bill.total).toFixed(2), W - mr, y, { align: 'right' });
+        y += 10;
+
+        // ── FOOTER ──
+        // sign box on right
+        const signX = W - mr - 38;
+        pdf.setDrawColor(...GRAY); pdf.setLineWidth(0.3);
+        pdf.line(signX, y + 10, W - mr, y + 10);
+        setFont('normal', 7, GRAY);
+        txt('Authorised Signature', W - mr, y + 14, { align: 'right' });
+
+        setFont('italic', 8, GRAY);
+        txt('Thank you for your business!', ml, y + 12);
+
+        pdf.save(fname);
+        toast('PDF downloaded!', 'success');
+      } catch (err) {
+        console.error(err);
+        toast('PDF generation failed: ' + err.message, 'error');
+      } finally {
+        if (btn) { btn.innerHTML = btn.id === 'downloadBtn' ? '⬇ Download PDF' : '⬇ PDF'; btn.disabled = false; }
+      }
+    }
+
+    // ══ MODALS ══
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
+    });
+
+    // ══ UTILS ══
+    function escHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function escAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+
+    // ══ INIT ══
+    document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('billNo').value = fmtBillNo(peekSeq());
+    addRow();
+    refreshDash();
+  </script>
+</body>
+
+</html>
